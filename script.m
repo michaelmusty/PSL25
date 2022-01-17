@@ -1,3 +1,5 @@
-load "utils.mag";
-load "enumerating_tiples.m"
-load "6T12-5.1_5.1_2.2.1.1-a.m"
+Attach("utils.m");
+Attach("enumerating_triples.m");
+load "6T12-5.1_5.1_2.2.1.1-a.m";
+sigma := sigmas[1];
+Coverings(sigma);
