@@ -27,91 +27,91 @@
 //   return s;
 // end intrinsic;
 
-// intrinsic SolvableCheckResidueFields(D::DivCrvElt) -> BoolElt, Any
-//   {Computes the residue fields at places in support of D. Returns false, FldRat if these are all trivial. Returns true, Compositum of all residue fields if any residue fields are not trivial.}
-//   supp := Support(D);
-//   assert #supp gt 0;
-//   fields := [* *];
-//   non_trivial := false;
-//   for pt in supp do
-//     field := AbsoluteField(ResidueClassField(FunctionFieldPlace(pt)));
-//     if Degree(field) gt 1 then
-//       non_trivial := true;
-//     end if;
-//     Append(~fields, field);
-//   end for;
-//   if non_trivial eq false then
-//     return false, Rationals();
-//   else
-//     return_field := Rationals();
-//     for i := 1 to #fields do
-//       // return_field := Compositum(return_field, fields[i]);
-//       return_field := CompositeFields(return_field, fields[i])[1];
-//     end for;
-//     return true, AbsoluteField(return_field);
-//   end if;
-// end intrinsic;
+intrinsic SolvableCheckResidueFields(D::DivCrvElt) -> BoolElt, Any
+  {Computes the residue fields at places in support of D. Returns false, FldRat if these are all trivial. Returns true, Compositum of all residue fields if any residue fields are not trivial.}
+  supp := Support(D);
+  assert #supp gt 0;
+  fields := [* *];
+  non_trivial := false;
+  for pt in supp do
+    field := AbsoluteField(ResidueClassField(FunctionFieldPlace(pt)));
+    if Degree(field) gt 1 then
+      non_trivial := true;
+    end if;
+    Append(~fields, field);
+  end for;
+  if non_trivial eq false then
+    return false, Rationals();
+  else
+    return_field := Rationals();
+    for i := 1 to #fields do
+      // return_field := Compositum(return_field, fields[i]);
+      return_field := CompositeFields(return_field, fields[i])[1];
+    end for;
+    return true, AbsoluteField(return_field);
+  end if;
+end intrinsic;
 
-// intrinsic SolvableSetToDivisor(set::SetEnum[PlcCrvElt]) -> DivCrvElt
-//   {Given a set of places, return the divisor.}
-//   DivX := Parent(Divisor(Random(set)));
-//   D := DivX!0;
-//   for pt in set do
-//     D := D+Divisor(pt);
-//   end for;
-//   return D;
-// end intrinsic;
+intrinsic SolvableSetToDivisor(set::SetEnum[PlcCrvElt]) -> DivCrvElt
+  {Given a set of places, return the divisor.}
+  DivX := Parent(Divisor(Random(set)));
+  D := DivX!0;
+  for pt in set do
+    D := D+Divisor(pt);
+  end for;
+  return D;
+end intrinsic;
 
-// intrinsic SolvableRamificationDivisorUsingAllPoints(D::DivCrvElt) -> BoolElt, DivCrvElt
-//   {Attempt to find 1 dimensional Lspace using all points in D.}
-//   vprintf Solvable: "#supp(Divisor) = %o\n", #Support(D);
-//   worked := false;
-//   supp := Support(D);
-//   suppset := SequenceToSet(supp);
-//   subs := Subsets(suppset);
-//   for sub in subs do
-//     if #sub ne 0 and #sub ne #suppset then
-//       pos := SolvableSetToDivisor(sub);
-//       neg := SolvableSetToDivisor(suppset diff sub);
-//       supp, mult := Support(pos-neg);
-//       vprintf Solvable: "Checking divisor:\n%o\n%o\n", supp, mult;
-//       if Dimension(RiemannRochSpace(pos-neg)) eq 1 then
-//         vprintf Solvable: "It worked!\n";
-//         return true, pos-neg;
-//       else
-//         vprintf Solvable: "Didn't work >_<.\n";
-//       end if;
-//     end if;
-//   end for;
-//   return false, Parent(D)!0;
-// end intrinsic;
+intrinsic SolvableRamificationDivisorUsingAllPoints(D::DivCrvElt) -> BoolElt, DivCrvElt
+  {Attempt to find 1 dimensional Lspace using all points in D.}
+  vprintf Solvable: "#supp(Divisor) = %o\n", #Support(D);
+  worked := false;
+  supp := Support(D);
+  suppset := SequenceToSet(supp);
+  subs := Subsets(suppset);
+  for sub in subs do
+    if #sub ne 0 and #sub ne #suppset then
+      pos := SolvableSetToDivisor(sub);
+      neg := SolvableSetToDivisor(suppset diff sub);
+      supp, mult := Support(pos-neg);
+      vprintf Solvable: "Checking divisor:\n%o\n%o\n", supp, mult;
+      if Dimension(RiemannRochSpace(pos-neg)) eq 1 then
+        vprintf Solvable: "It worked!\n";
+        return true, pos-neg;
+      else
+        vprintf Solvable: "Didn't work >_<.\n";
+      end if;
+    end if;
+  end for;
+  return false, Parent(D)!0;
+end intrinsic;
 
-// intrinsic SolvableDimensionOneLspacesUsingAllPoints(D::DivCrvElt) -> BoolElt, List
-//   {Find all 1 dimensional Lspace using all points in D. Return true if at least one such divisor.}
-//   supp := Support(D);
-//   suppset := SequenceToSet(supp);
-//   subs := Subsets(suppset);
-//   dimension_one_spaces := [* *];
-//   for sub in subs do
-//     if #sub ne 0 and #sub ne #suppset then
-//       pos := SolvableSetToDivisor(sub);
-//       neg := SolvableSetToDivisor(suppset diff sub);
-//       supp, mult := Support(pos-neg);
-//       vprintf Solvable: "Checking divisor:\n%o\n%o\n", supp, mult;
-//       if Dimension(RiemannRochSpace(pos-neg)) eq 1 then
-//         vprintf Solvable: "It worked!\n";
-//         Append(~dimension_one_spaces, pos-neg);
-//       else
-//         vprintf Solvable: "Didn't work >_<.\n";
-//       end if;
-//     end if;
-//   end for;
-//   if #dimension_one_spaces gt 0 then
-//     return true, dimension_one_spaces;
-//   else
-//     return false, [* Parent(D)!0 *];
-//   end if;
-// end intrinsic;
+intrinsic SolvableDimensionOneLspacesUsingAllPoints(D::DivCrvElt) -> BoolElt, List
+  {Find all 1 dimensional Lspace using all points in D. Return true if at least one such divisor.}
+  supp := Support(D);
+  suppset := SequenceToSet(supp);
+  subs := Subsets(suppset);
+  dimension_one_spaces := [* *];
+  for sub in subs do
+    if #sub ne 0 and #sub ne #suppset then
+      pos := SolvableSetToDivisor(sub);
+      neg := SolvableSetToDivisor(suppset diff sub);
+      supp, mult := Support(pos-neg);
+      vprintf Solvable: "Checking divisor:\n%o\n%o\n", supp, mult;
+      if Dimension(RiemannRochSpace(pos-neg)) eq 1 then
+        vprintf Solvable: "It worked!\n";
+        Append(~dimension_one_spaces, pos-neg);
+      else
+        vprintf Solvable: "Didn't work >_<.\n";
+      end if;
+    end if;
+  end for;
+  if #dimension_one_spaces gt 0 then
+    return true, dimension_one_spaces;
+  else
+    return false, [* Parent(D)!0 *];
+  end if;
+end intrinsic;
 
 intrinsic SolvableRamificationToDivisor(ram::SeqEnum[BoolElt], Ds::List) -> DivCrvElt
   {Given ramification data and [D0, D1, Doo], return corresponding divisor.}
