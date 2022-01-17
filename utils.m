@@ -158,6 +158,16 @@ intrinsic SolvableRamificationToDivisor(ram::SeqEnum[BoolElt], Ds::List) -> DivC
   end if;
 end intrinsic;
 
+intrinsic VarSeq(var::MonStgElt, lower::RngIntElt, upper::RngIntElt) -> SeqEnum[MonStgElt]
+  {returns SeqEnum ["varlower", "varlower+1", ..., "varupper-1", "varupper"].}
+  assert upper ge lower;
+  var_seq := [];
+  for i := lower to upper do
+    Append(~var_seq, Sprintf("%o%o", var, i));
+  end for;
+  return var_seq;
+end intrinsic;
+
 intrinsic ExtractRoot(Y::Crv, f::FldFunFracSchElt, m::RngIntElt) -> Crv
   {Given a curve Y, and f in KY the function field of Y, return a new curve X with function field KX where KX = KY(mthroot(f)).}
   // assertions
