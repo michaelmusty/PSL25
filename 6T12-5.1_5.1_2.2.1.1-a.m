@@ -14,7 +14,8 @@ embeddings := [ComplexField(15)![1.0, 0.0]];
 // Geometric data
 
 // Define the base field
-K<nu> := RationalsAsNumberField();
+//K<nu> := RationalsAsNumberField();
+K := Rationals();
 // Define the curve
 X := Curve(ProjectiveSpace(PolynomialRing(K, 2)));
 // Define the map

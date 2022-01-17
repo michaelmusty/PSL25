@@ -129,5 +129,5 @@ dmypy.json
 .pyre/
 
 # Magma stuff
-.sig
-.swp
+*.sig
+*.swp

@@ -168,6 +168,21 @@ intrinsic VarSeq(var::MonStgElt, lower::RngIntElt, upper::RngIntElt) -> SeqEnum[
   return var_seq;
 end intrinsic;
 
+intrinsic VarText(var::MonStgElt, lower::RngIntElt, upper::RngIntElt) -> MonStgElt
+  {returns text "varlower, varlower+1, ..., varupper-1, varupper".}
+  assert upper ge lower;
+  var_text := "";
+  if upper eq lower then
+    var_text *:= Sprintf("%o%o", var, lower);
+  else
+    for i := lower to upper-1 by 1 do
+      var_text *:= Sprintf("%o%o, ", var, i);
+    end for;
+    var_text *:= Sprintf("%o%o", var, upper);
+  end if;
+  return var_text;
+end intrinsic;
+
 intrinsic ExtractRoot(Y::Crv, f::FldFunFracSchElt, m::RngIntElt) -> Crv
   {Given a curve Y, and f in KY the function field of Y, return a new curve X with function field KX where KX = KY(mthroot(f)).}
   // assertions
@@ -194,11 +209,11 @@ intrinsic ExtractRoot(Y::Crv, f::FldFunFracSchElt, m::RngIntElt) -> Crv
     new_equation := denom*PX.Rank(PX)^m-numer;
     Append(~basis, new_equation);
     IX := ideal< PX | basis >;
-    vprintf Solvable : "saturating at...";
+    //vprintf Solvable : "saturating at..."; //hack
     // S := Saturation(IX, numer); // saturate at numerator
     // vprintf Solvable : "numerator...\n";
     S := Saturation(IX, denom); // saturate at numerator
-    vprintf Solvable : "denominator...\n";
+    //vprintf Solvable : "denominator...\n"; //hack
     assert IsPrime(S);
   // new ambient
     AAX := AffineSpace(PX);
