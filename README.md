@@ -9,3 +9,6 @@ Groups:
 
 Relevant lifting code:
 * [https://github.com/michaelmusty/SolvableDessins/tree/master/Code](https://github.com/michaelmusty/SolvableDessins/tree/master/Code)
+
+# References
+* [https://michaelmusty.github.io/assets/musty_thesis_final.pdf](https://michaelmusty.github.io/assets/musty_thesis_final.pdf)
