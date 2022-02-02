@@ -53,7 +53,6 @@ eqns := $1;
 R;
 R := Parent(eqns[1]);
 I := ideal< R | eqns>;
-eqns_aff := [Evaluate(el, [R.1, R.2, 1] : el in eqns];
 eqns_aff := [Evaluate(el, [R.1, R.2, 1]) : el in eqns];
 eqns_aff;
 S<t1,t2> := Parent($1[1]);
