@@ -12,7 +12,8 @@ phi1 := (-1)*(x^6 + e5*x^5 + e4*x^4 + e3*x^3 + e2*x^2 + e1*x + e0)^2*(x^5 + f4*x
 
 eqns := Coefficients(phi0 - (phi1 + phioo));
 
-CC<I> := ComplexField(30);
+prec := 30;
+CC<I> := ComplexField(prec);
 S<xCC> := PolynomialRing(CC);
 
 /* 
@@ -89,6 +90,8 @@ phi_facts :=
 ];
 */
 
+u := 43.45956227438421277639910263956097508732 + 6.631542127324468621453790573573933171339E-25*I;
+
 LeadingTerms := 
 [ 108.6489056859605319409977565947449571692 + 1.652791446514567164748999198105806360596E-24*I, 3497028.891469161942490267071125908850703 + 5.325576532976804918070205225438392961101E-20*I, -3497028.891469161942490267071125908850701 - 5.325576532976819457815590734681471835283E-20*I ];
 pointCC4 := 
@@ -117,4 +120,44 @@ phioo := (x^4 + d3*x^3 + d2*x^2 + x + d0)^4*(x-c);
 phi1 := (-1)*(x^6 + e5*x^5 + e4*x^4 + e3*x^3 + e2*x^2 + e1*x + e0)^2*(x^5 + f4*x^4 + f3*x^3 + f2*x^2 + f1*x + f0);
 R0<b,c,d0,d2,d3,e0,e1,e2,e3,e4,e5,f0,f1,f2,f3,f4,lc> := PolynomialRing(QQ,17);
 */
+
+solvec := // put initial vector here
+solvec := Vector(solvec);
+
+dd := Ncols(solvec);
+//cfs := Generators(I)[1..dd];
+cfs := eqns;
+
+precstart := prec;
+precNewton := 500;
+itercnt := 0;
+while itercnt lt 50 do
+  itercnt +:= 1;
+  solvec := ChangeRing(solvec, ComplexField(prec));
+  fsol := [-Evaluate(P,Eltseq(solvec)) : P in cfs];
+  err := RealField()!Max([Abs(fs) : fs in fsol]);
+
+  if prec ge precNewton then
+    prec +:= Ceiling(1/10*precNewton);
+  else
+    prec := Max([precstart,Min([precNewton,Ceiling(11/10*prec)]),Min([precNewton,Ceiling(-2*Log(err)/Log(10))])]);
+  end if;
+
+  vprintf Shimura : "%o: err = %o, prec = %o... ", itercnt, RealField(6)!err, prec;
+  if prec ge precNewton and err lt 10^(-precNewton+Log(precNewton)) then
+    vprintf Shimura : "\n";
+    break;
+  end if;
+  J := Matrix([[Evaluate(Derivative(P,Parent(P).i),Eltseq(solvec)) : P in cfs] : i in [1..dd]]);
+  Q, L := QLDecomposition(J);
+  w := (Vector(fsol)*(L^-1))*Conjugate(Transpose(Q));   // this is ridiculous, shouldn't have to compute an inverse
+  // In QR, R = Transpose(A)*J.  What is the correct thing for QL? L2LA
+  // w := Vector(fsol)*NumericalPseudoinverse(J);      // why so slow?
+  
+  vprintf Shimura : "Norm(w) = %o\n", RealField(6)!Sqrt(&+[Abs(ww)^2 : ww in Eltseq(w)]);
+  solvec +:= w;
+end while;
+if itercnt eq 50 then
+  error "Newton didn't converge or something?";
+end if;
 
