@@ -1,5 +1,6 @@
 AttachSpec("spec");
 SetVerbose("Shimura",true);
+SetDebugOnError(true);
 sigma := [ PermutationGroup<17 |  
 \[ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 1 ],
   \[ 2, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 ]:
@@ -9,7 +10,7 @@ sigma := [ PermutationGroup<17 |
    [ 12, 2, 11, 15, 7, 8, 10, 16, 13, 14, 4, 9, 1, 5, 3, 17, 6 ]
    ];
 Gamma := TriangleSubgroup(sigma);
-BelyiMap(Gamma : prec := 80);
+BelyiMap(Gamma : prec := 40);
 
 
 // first try
