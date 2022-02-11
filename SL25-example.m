@@ -1,5 +1,7 @@
+ChangeDirectory("~/github/Belyi/Code");
 AttachSpec("spec");
 SetVerbose("Shimura",true);
+SetDebugOnError(true);
 G := SmallGroup(120,5);
 triples := PassportRepresentatives(G);
 /*
@@ -18,5 +20,6 @@ sigma := [ PermutationGroup<24 |
    [ 7, 10, 19, 13, 16, 21, 12, 11, 18, 14, 15, 6, 17, 3, 9, 4, 5, 8, 2, 20, 1, 22, 23, 24 ],
    [ 1, 2, 21, 4, 19, 18, 14, 8, 16, 17, 12, 20, 15, 22, 23, 7, 24, 10, 11, 5, 13, 9, 3, 6 ]
    ];
+sigma := S3Action(Sym(3)!(3,2,1), sigma);
 Gamma := TriangleSubgroup(sigma);
 X, phi := BelyiMap(Gamma : prec := 80);
