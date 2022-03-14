@@ -10,7 +10,7 @@ t0s := [a+b*nu : a,b in [-10..10]];
 t0s := [t0 : t0 in t0s | not t0 in QQ];
 t0s := SetToSequence(SequenceToSet(t0s));
 special_t0s := [];
-t0 := nu + 4;
+//t0 := nu + 4;
 for t0 in t0s do
   printf "evaluating at %o\n", t0;
   Fev := Evaluate(F, [t0, s]);
