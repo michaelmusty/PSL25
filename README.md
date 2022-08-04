@@ -12,3 +12,6 @@ Relevant lifting code:
 
 # References
 * [https://michaelmusty.github.io/assets/musty_thesis_final.pdf](https://michaelmusty.github.io/assets/musty_thesis_final.pdf)
+
+# 17T7 moved
+All code relating to solving the inverse Galois problem for the group 17T7 has been moved to the repo https://github.com/SamSchiavone/17T7
